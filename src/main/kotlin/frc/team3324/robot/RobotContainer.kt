@@ -21,10 +21,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil
 import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig
 import frc.team3324.robot.util.Consts
 import java.nio.file.Path
 import java.util.function.BiConsumer
 import java.util.function.Supplier
+import edu.wpi.first.wpilibj.geometry.Rotation2d
+
+import edu.wpi.first.wpilibj.geometry.Pose2d
+
+import edu.wpi.first.wpilibj.geometry.Translation2d
+
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator
+import java.util.List
 
 
 class RobotContainer {
@@ -34,6 +43,8 @@ class RobotContainer {
     private val table = NetworkTableInstance.getDefault()
 
     private val navChooser = SendableChooser<Trajectory>()
+
+    private val config = TrajectoryConfig(Consts.DriveTrain.LOW_GEAR_MAX_VELOCITY, Consts.DriveTrain.LOW_GEAR_MAX_ACCELERATION)
 
     private val primaryController = XboxController(0)
     private val secondaryController = XboxController(1)
@@ -127,6 +138,16 @@ class RobotContainer {
     fun getTrajectory():Trajectory? {
         return navChooser.selected
     }
+
+    var exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        Pose2d(0.0, 0.0, Rotation2d(0.0)),
+        listOf(
+            Translation2d(1.0, 1.0),
+            Translation2d(2.0, -1.0)
+        ),
+        Pose2d(3.0, 0.0, Rotation2d(0.0)),  
+        config
+    )
   
     fun importTrajectory(navPath: String): Trajectory {
         var path = "paths/" + navPath
