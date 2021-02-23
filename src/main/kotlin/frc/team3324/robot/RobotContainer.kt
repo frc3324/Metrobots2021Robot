@@ -71,15 +71,15 @@ class RobotContainer {
        driveTrain.defaultCommand = Drive(driveTrain, {primaryController.getY(GenericHID.Hand.kLeft)}, {primaryController.getX(GenericHID.Hand.kRight)})
 
 
-       pivot.defaultCommand = MotorCommand(pivot, -0.05)
-       intake.defaultCommand = MotorCommand(intake, if (secondTriggerRight > 0.0) secondTriggerRight * 0.5 else -secondTriggerLeft * 0.5)
+       //pivot.defaultCommand = MotorCommand(pivot, 0.05)
        configureButtonBindings()
 
    }
 
     private fun configureButtonBindings() {
-        JoystickButton(primaryController, Button.kBumperLeft.value).whenPressed(MotorCommand(pivot, -0.5,finishedCondition = pivot.lowerLimitSwitch.get()))
-        JoystickButton(primaryController, Button.kBumperRight.value).whenPressed(MotorCommand(pivot, 0.5,finishedCondition = pivot.upperLimitSwitch.get()))
+        JoystickButton(primaryController, Button.kBumperLeft.value).whenPressed(MotorCommand(pivot, -0.4,finishedCondition = {!pivot.upperLimitSwitch.get()}))
+        JoystickButton(primaryController, Button.kBumperRight.value).whenPressed(MotorCommand(pivot, 0.4,finishedCondition = {!pivot.lowerLimitSwitch.get()}))
+
         JoystickButton(primaryController, Button.kX.value).whenPressed(ToggleLightCommand(Robot.light))
         JoystickButton(primaryController, Button.kA.value).whileHeld(MotorCommand(climber, -1.0, 0)) // run the left climber motor
         JoystickButton(primaryController, Button.kB.value).whileHeld(MotorCommand(climber, -1.0, 1)) // run the right climber motor
@@ -92,20 +92,22 @@ class RobotContainer {
                 {cameraTable.getEntry("targetYaw").getDouble(0.0)},
                 {input -> driveTrain.curvatureDrive(0.0, input, true)}
         ))
+
+
         JoystickButton(secondaryController, Button.kX.value).whenPressed(RunShooter(shooter, {cameraTable.getEntry("targetArea").getDouble(3800.0)}, false).withTimeout(10.0))
         JoystickButton(secondaryController, Button.kY.value).whenPressed(RunShooter(shooter, {cameraTable.getEntry("targetArea").getDouble(3800.0)}, true).withTimeout(10.0))
-        JoystickButton(secondaryController, Button.kBumperLeft.value).whileHeld(MotorCommand(storage, 0.799999998, 0, false).alongWith(MotorCommand(storage, 0.6, 1, false)).alongWith(MotorCommand(intake, 1.0,required = false)))
-        JoystickButton(secondaryController, Button.kBumperRight.value).whileHeld(MotorCommand(storage, -0.799999998, 0, false).alongWith(MotorCommand(storage, -0.6, 1, false)).alongWith(MotorCommand(intake, -1.0,required = false)))
+        JoystickButton(secondaryController, Button.kBumperLeft.value).whileHeld(MotorCommand(storage, 0.799999998, 0, false).alongWith(MotorCommand(storage, 0.6, 1, false)).alongWith(MotorCommand(intake, 1.0)))
+        JoystickButton(secondaryController, Button.kBumperRight.value).whileHeld(MotorCommand(storage, -0.799999998, 0, false).alongWith(MotorCommand(storage, -0.6, 1, false)).alongWith(MotorCommand(intake, -1.0)))
 
         JoystickButton(secondaryController, Button.kA.value).whileHeld(MotorCommand(intake, -1.0))
         JoystickButton(secondaryController, Button.kB.value).whileHeld(MotorCommand(intake, 1.0))
         JoystickButton(secondaryController, Button.kStart.value).whenPressed(StopShooter(shooter))
-        JoystickButton(bongos, 1).whileHeld(MotorCommand(storage, 1.066666664, 0, false).alongWith(MotorCommand(storage, 0.8, 1, false)))
+        /*JoystickButton(bongos, 1).whileHeld(MotorCommand(storage, 1.066666664, 0, false).alongWith(MotorCommand(storage, 0.8, 1, false)))
         JoystickButton(bongos, 2).whileHeld(MotorCommand(storage, -1.066666664, 0, false).alongWith(MotorCommand(storage, -0.8, 1, false)))
         JoystickButton(bongos, 4).whileHeld(MotorCommand(intake, 1.0))
         JoystickButton(bongos, 3).whileHeld(MotorCommand(intake, -1.0))
         JoystickButton(bongos, 10).whenPressed(RunShooter(shooter, {cameraTable.getEntry("targetArea").getDouble(3800.0)}, false).withTimeout(   10.0))
-
+*/
     }
 
     fun rumbleController(rumbleLevel: Double) {

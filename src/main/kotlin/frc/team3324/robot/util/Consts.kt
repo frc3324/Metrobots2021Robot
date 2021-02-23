@@ -12,8 +12,8 @@ object Consts {
         const val LM_MOTOR = 1
         const val LU_MOTOR = 2
         const val LD_MOTOR = 3
-        const val RM_MOTOR = 5
-        const val RU_MOTOR = 4
+        const val RM_MOTOR = 4
+        const val RU_MOTOR = 5
         const val RD_MOTOR = 6
 
         // Encoder and Auto constants
@@ -71,12 +71,12 @@ object Consts {
     }
 
     object Intake {
-        val MOTOR = MetroTalonSRX(26, 10)
+        val MOTOR = MetroSparkMAX(9, CANSparkMaxLowLevel.MotorType.kBrushless, 30)
     }
 
     object Pivot {
-        val UPPER_LIMIT_SWITCH = DigitalInput(0)
-        val LOWER_LIMIT_SWITCH = DigitalInput(1)
+        val UPPER_LIMIT_SWITCH = DigitalInput(6)
+        val LOWER_LIMIT_SWITCH = DigitalInput(5)
 
         val MOTOR = MetroSparkMAX(8, CANSparkMaxLowLevel.MotorType.kBrushless, 30)
     }

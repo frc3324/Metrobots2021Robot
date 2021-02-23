@@ -3,7 +3,9 @@ package frc.team3324.robot
 import edu.wpi.first.wpilibj.livewindow.LiveWindow
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.cameraserver.CameraServer
+import edu.wpi.first.networktables.NetworkTable
 import edu.wpi.first.wpilibj.*
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import io.github.oblarg.oblog.Logger
 
 class Robot: TimedRobot() {
