@@ -71,7 +71,7 @@ class RobotContainer {
        driveTrain.defaultCommand = Drive(driveTrain, {primaryController.getY(GenericHID.Hand.kLeft)}, {primaryController.getX(GenericHID.Hand.kRight)})
 
 
-       //pivot.defaultCommand = MotorCommand(pivot, 0.05)
+       pivot.defaultCommand = MotorCommand(pivot, -0.10)
        configureButtonBindings()
 
    }
@@ -81,6 +81,8 @@ class RobotContainer {
         JoystickButton(primaryController, Button.kBumperRight.value).whenPressed(MotorCommand(pivot, 0.4,finishedCondition = {!pivot.lowerLimitSwitch.get()}))
 
         JoystickButton(primaryController, Button.kX.value).whenPressed(ToggleLightCommand(Robot.light))
+
+
         JoystickButton(primaryController, Button.kA.value).whileHeld(MotorCommand(climber, -1.0, 0)) // run the left climber motor
         JoystickButton(primaryController, Button.kB.value).whileHeld(MotorCommand(climber, -1.0, 1)) // run the right climber motor
         JoystickButton(primaryController, Button.kStickLeft.value).whileHeld(MotorCommand(climber, 1.0, 0, false))

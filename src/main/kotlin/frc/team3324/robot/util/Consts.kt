@@ -78,6 +78,6 @@ object Consts {
         val UPPER_LIMIT_SWITCH = DigitalInput(6)
         val LOWER_LIMIT_SWITCH = DigitalInput(5)
 
-        val MOTOR = MetroSparkMAX(8, CANSparkMaxLowLevel.MotorType.kBrushless, 30)
+        val MOTOR = MetroSparkMAX(8, CANSparkMaxLowLevel.MotorType.kBrushless, 20)
     }
 }

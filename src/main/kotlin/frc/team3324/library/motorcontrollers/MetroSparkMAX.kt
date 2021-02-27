@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax
 
 class MetroSparkMAX(deviceID: Int, type: MotorType, currentLimit: Int) : CANSparkMax(deviceID, type), SmartMotorController {
     init {
+        super.restoreFactoryDefaults()
         setCurrentLimit(currentLimit)
     }
 
