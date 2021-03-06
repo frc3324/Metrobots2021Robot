@@ -8,7 +8,8 @@ import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.core.Size
 import org.opencv.core.Scalar
-import org.opencv.imgproc.Moments
+import kotlin.math.abs
+import kotlin.math.atan
 
 class FrontCamera {
     val frontCamera = CameraServer.getInstance().startAutomaticCapture(0)
@@ -18,12 +19,13 @@ class FrontCamera {
     var imgMat = Mat()
     var mask = Mat()
     var contours = ArrayList<MatOfPoint>()
-    var moment: Moments? = null
+    var moment = Mat()
     var xCenter = 0.0
     var yCenter = 0.0
     var imageCenter = 0.0
 
     var angle = 0.0
+    var distance = 0.0
 
     val verticalFOV = 34.3
     val horizontalFOV = 61.0
@@ -47,10 +49,15 @@ class FrontCamera {
         Imgproc.drawContours(mask, contours, 0, Scalar(255.0))
         xCenter = Imgproc.moments(mask)._m10 / Imgproc.moments(mask)._m00
         yCenter = Imgproc.moments(mask)._m01 / Imgproc.moments(mask)._m00
-        imageCenter = imgMat.size().width
+        imageCenter = imgMat.size().width / 2
+        distance = abs(imageCenter-xCenter)
+        angle = atan(distance/(2*focalLength))
 
-        println(mask.size().width)
-        
+        println("Center of Image " + imageCenter)
+        println("Distance Between "+ distance)
+        println("Angle Between " + angle)
+
+
 
     }
 
