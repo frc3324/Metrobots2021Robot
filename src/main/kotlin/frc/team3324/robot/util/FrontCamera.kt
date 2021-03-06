@@ -3,7 +3,6 @@ package frc.team3324.robot.util
 import org.opencv.imgproc.Imgproc
 import edu.wpi.cscore.CvSink
 import edu.wpi.first.cameraserver.CameraServer
-import jdk.nashorn.internal.runtime.JSType.toDouble
 import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
@@ -27,13 +26,13 @@ class FrontCamera {
     var angle = 0.0
 
     val verticalFOV = 34.3
-    val horizontalFOV = 61
-    val focalLength = 640 / (2 * kotlin.math.tan(toDouble(horizontalFOV / 2)))
+    val horizontalFOV = 61.0
+    val focalLength = 640 / (2 * kotlin.math.tan((horizontalFOV / 2.0)))
 
     val kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(7.0, 7.0))
 
-    val lowerBound = Scalar(0.0,0.0,0.0)
-    val upperBound = Scalar(255.0,255.0, 255.0)
+    val lowerBound = Scalar(49.5,2.5,252.5)
+    val upperBound = Scalar(50.5,3.5, 253.5)
 
     init {
         frontCamera.setResolution(640, 480)
@@ -50,8 +49,8 @@ class FrontCamera {
         yCenter = Imgproc.moments(mask)._m01 / Imgproc.moments(mask)._m00
         imageCenter = imgMat.size().width
 
-        // log   mask.size().width
-
+        println(mask.size().width)
+        
 
     }
 
