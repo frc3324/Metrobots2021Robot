@@ -7,44 +7,30 @@ import edu.wpi.first.wpilibj.controller.PIDController
 import edu.wpi.first.wpilibj.controller.RamseteController
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward
 import edu.wpi.first.wpilibj.trajectory.Trajectory
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint
 import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.PIDCommand
 import edu.wpi.first.wpilibj2.command.RamseteCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.team3324.robot.drivetrain.DriveTrain
 import frc.team3324.robot.drivetrain.commands.teleop.Drive
-import frc.team3324.robot.drivetrain.commands.auto.MeterForward
 import io.github.oblarg.oblog.Logger
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil
 import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig
 import frc.team3324.robot.util.Consts
 import java.nio.file.Path
 import java.util.function.BiConsumer
 import java.util.function.Supplier
-import edu.wpi.first.wpilibj.geometry.Rotation2d
 
-import edu.wpi.first.wpilibj.geometry.Pose2d
-
-import edu.wpi.first.wpilibj.geometry.Translation2d
-
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator
-import java.util.List
+import frc.team3324.robot.util.Trajectories
 
 
 class RobotContainer {
-    private val driveTrain = DriveTrain()
-
+    val driveTrain = DriveTrain()
 
     private val table = NetworkTableInstance.getDefault()
 
     private val navChooser = SendableChooser<Trajectory>()
-
-    private val config = TrajectoryConfig(Consts.DriveTrain.LOW_GEAR_MAX_VELOCITY, Consts.DriveTrain.LOW_GEAR_MAX_ACCELERATION)
 
     private val primaryController = XboxController(0)
     private val secondaryController = XboxController(1)
@@ -72,26 +58,22 @@ class RobotContainer {
         get() = secondaryController.getTriggerAxis(GenericHID.Hand.kLeft)
 
 
-
-
    init {
        Robot.light.set(true)
        Logger.configureLoggingAndConfig(this, true)
        driveTrain.defaultCommand = Drive(driveTrain, {primaryController.getY(GenericHID.Hand.kLeft)}, {primaryController.getX(GenericHID.Hand.kRight)})
+       navChooser.setDefaultOption("Test Line", Trajectories.TestLine.trajectory)
+       navChooser.addOption("Galactic A_R", Trajectories.GalacticAR.trajectory)
+       SmartDashboard.putData(navChooser)
 
        configureButtonBindings()
-       navChooser.setDefaultOption("Straight Line", importTrajectory("StraightLine.wpilib.json"))
-       navChooser.addOption("Barrel Racing Path", importTrajectory("BarrelRacingPath.wpilib.json"))
-       navChooser.addOption("Slalom Path", importTrajectory("Slalom.wpilib.json"))
-       navChooser.addOption("Bounce Path", importTrajectory("Bounce.wpilib.json"))
-       navChooser.addOption("Smol (Alex)", importTrajectory("smol.wpilib.json"))
-
-
-       SmartDashboard.putData(navChooser)
    }
 
     private fun configureButtonBindings() {
-        JoystickButton(primaryController, Button.kA.value).whenPressed(MeterForward(driveTrain, TrapezoidProfile.State(6.0, 0.0)))
+        //JoystickButton(primaryController, Button.kA.value).whenPressed(MeterForward(driveTrain, TrapezoidProfile.State(6.0, 0.0)))
+        JoystickButton(primaryController, Button.kB.value).whenPressed(getRamseteCommand(navChooser.selected))
+
+        JoystickButton(primaryController, Button.kStart.value).whenPressed(Runnable{driveTrain.resetOdometry(navChooser.selected.initialPose)}, driveTrain)
         /*JoystickButton(primaryController, Button.kY.value).whileHeld(GyroTurn(
                 driveTrain,
                 1.0/70.0,
@@ -108,47 +90,29 @@ class RobotContainer {
         secondaryController.setRumble(GenericHID.RumbleType.kRightRumble, rumbleLevel)
     }
 
-    fun getAutoCommand(trajectory: Trajectory): Command {
-        val autoVoltageConstraint = DifferentialDriveVoltageConstraint(
-            SimpleMotorFeedforward(Consts.DriveTrain.ksVolts,
-                Consts.DriveTrain.LOW_GEAR_KV,
-                Consts.DriveTrain.LOW_GEAR_KA),
-            Consts.DriveTrain.kDriveKinematics, 10.0) // maxVoltage of 10 allows for head room
+    fun getRamseteCommand(trajectory: Trajectory): Command {
 
         driveTrain.resetOdometry(trajectory.initialPose)
 
         val ramseteCommand = RamseteCommand(
-            trajectory,
-            Supplier{driveTrain.pose},
-            RamseteController(Consts.DriveTrain.kRamseteB, Consts.DriveTrain.kRamseteZeta),
-            SimpleMotorFeedforward(Consts.DriveTrain.ksVolts, Consts.DriveTrain.LOW_GEAR_KV, Consts.DriveTrain.LOW_GEAR_KA),
-            Consts.DriveTrain.kDriveKinematics,
-            Supplier{driveTrain.wheelSpeeds},
-            PIDController(Consts.DriveTrain.kP, 0.0, 0.0),
-            PIDController(Consts.DriveTrain.kP, 0.0, 0.0),
-            BiConsumer(driveTrain::tankDriveVolts),
-            driveTrain
+                trajectory,
+                Supplier { driveTrain.pose },
+                RamseteController(Consts.DriveTrain.kRamseteB, Consts.DriveTrain.kRamseteZeta),
+                SimpleMotorFeedforward(Consts.DriveTrain.ksVolts,
+                                        Consts.DriveTrain.LOW_GEAR_KV,
+                                        Consts.DriveTrain.LOW_GEAR_KA),
+                Consts.DriveTrain.kDriveKinematics,
+                Supplier { driveTrain.wheelSpeeds },
+                PIDController(Consts.DriveTrain.kP, 0.0, 0.0),
+                PIDController(Consts.DriveTrain.kP, 0.0, 0.0),
+                BiConsumer { t, u ->  driveTrain.tankDriveVolts(t, u)},
+                driveTrain
         )
 
-        driveTrain.resetOdometry(trajectory.initialPose)
-
-        return ramseteCommand.andThen({driveTrain.tankDriveVolts(0.0, 0.0)}, arrayOf(driveTrain))
+        return ramseteCommand.andThen(Runnable{driveTrain.tankDriveVolts(0.0, 0.0)}, driveTrain)
     }
 
-    fun getTrajectory():Trajectory? {
-        return navChooser.selected
-    }
 
-    var exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        Pose2d(0.0, 0.0, Rotation2d(0.0)),
-        listOf(
-            Translation2d(1.0, 1.0),
-            Translation2d(2.0, -1.0)
-        ),
-        Pose2d(3.0, 0.0, Rotation2d(0.0)),  
-        config
-    )
-  
     fun importTrajectory(navPath: String): Trajectory {
         var path = "paths/" + navPath
         val trajectoryPath: Path = Filesystem.getDeployDirectory().toPath().resolve(path)

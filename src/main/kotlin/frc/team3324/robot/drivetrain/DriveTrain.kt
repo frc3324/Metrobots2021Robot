@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 
 import frc.team3324.robot.util.Consts
@@ -173,7 +175,8 @@ class DriveTrain: SubsystemBase(), Loggable {
     }
 
     override fun periodic() {
-        diffDriveOdometry.update(Rotation2d.fromDegrees(gyro.yaw.toDouble()), leftEncoder.position, rightEncoder.position)
+        diffDriveOdometry.update(Rotation2d.fromDegrees(gyro.yaw.toDouble()), leftEncoderPosition, -rightEncoderPosition)
+        SmartDashboard.putString("Pose", diffDriveOdometry.poseMeters.toString())
         shifterCount += 1
 
         val currentVelocity = velocity
@@ -185,6 +188,12 @@ class DriveTrain: SubsystemBase(), Loggable {
             shifterStatus = Consts.DriveTrain.LOW_GEAR
             activeConversionRatio = Consts.DriveTrain.DISTANCE_PER_PULSE_LOW
         }
+        SmartDashboard.putNumber("Gyro Yaw", yaw)
+        SmartDashboard.putNumber("Left Encoder Speed", leftEncoderSpeed)
+        SmartDashboard.putNumber("Right Encoder Speed", rightEncoderSpeed)
+        SmartDashboard.putNumber("Left Encoder Distance (Meters)", leftEncoderPosition)
+        SmartDashboard.putNumber("Right Encoder Distance (Meters)", rightEncoderPosition)
+
     }
 
     fun curvatureDrive(xSpeed: Double, ySpeed: Double, quickTurn: Boolean) {
@@ -209,8 +218,8 @@ class DriveTrain: SubsystemBase(), Loggable {
     }
 
     fun tankDriveVolts(leftVolts: Double, rightVolts: Double) {
-        drive.feed()
         lmMotor.setVoltage(leftVolts)
         rmMotor.setVoltage(-rightVolts)
+        drive.feed()
     }
 }

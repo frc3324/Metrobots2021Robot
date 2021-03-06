@@ -2,11 +2,9 @@ package frc.team3324.robot
 
 import edu.wpi.first.wpilibj.livewindow.LiveWindow
 import edu.wpi.first.wpilibj2.command.CommandScheduler
-import edu.wpi.first.cameraserver.CameraServer
 import edu.wpi.first.wpilibj.*
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
-import edu.wpi.first.wpilibj.trajectory.Trajectory
-import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil
+import frc.team3324.robot.util.Trajectories
 import io.github.oblarg.oblog.Logger
 
 class Robot: TimedRobot() {
@@ -24,9 +22,10 @@ class Robot: TimedRobot() {
 
     override fun robotInit() {
         SmartDashboard.putNumber("Volt", 0.0)
-        CameraServer.getInstance().startAutomaticCapture()
+        //CameraServer.getInstance().startAutomaticCapture()
         LiveWindow.disableAllTelemetry()
         compressor.start()
+
     }
 
     fun enabledInit() {
@@ -40,20 +39,21 @@ class Robot: TimedRobot() {
 
     override fun teleopInit() {
         enabledInit()
+        CommandScheduler.getInstance().cancelAll()
+        //robotContainer.driveTrain.resetOdometry(Trajectories.GalacticAR.trajectory.initialPose)
     }
 
+
+    override fun autonomousInit() {
+        val trajectory = Trajectories.GalacticAR.trajectory
+        if (trajectory != null) {
+            robotContainer.getRamseteCommand(trajectory).schedule()
+        }
+    }
     override fun teleopPeriodic() {
     }
 
-    override fun autonomousInit() {
-        val trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve("paths/StraightLine.wpilib.json")
-        val trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath)
-        if (trajectory != null) {
-            System.out.println("beep boop i am here <-----------------------------------------------------")
-            robotContainer.getAutoCommand(trajectory).schedule()
-            System.out.println("meep moop i am gone <-----------------------------------------------------")
-        }
-    }
-    override fun autonomousPeriodic() {
+    override fun disabledInit() {
+        CommandScheduler.getInstance().cancelAll()
     }
 }

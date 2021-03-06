@@ -26,6 +26,8 @@ object Consts {
         const val DISTANCE_PER_PULSE_HIGH = CIRCUMFERENCE * HIGH_GEAR_RATIO
         const val DISTANCE_PER_PULSE_LOW = CIRCUMFERENCE * LOW_GEAR_RATIO
         const val DISTANCE_BETWEEN_WHEELS = 0.61
+        //const val ROBOT_LENGTH = 0.91 // length of robot bumper to bumper in meters
+        //const val ROBOT_WIDTH = 0.89 // width of robot bumper to bumper in meters
 
         // feedforward gains
         const val ksVolts = 0.126 // volts
