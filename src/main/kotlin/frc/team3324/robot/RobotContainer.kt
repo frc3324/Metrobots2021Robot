@@ -21,6 +21,7 @@ import frc.team3324.robot.util.Camera
 import frc.team3324.robot.util.Consts
 import frc.team3324.library.commands.ToggleLightCommand
 import frc.team3324.library.subsystems.MotorSubsystem
+import frc.team3324.robot.util.FrontCamera
 import io.github.oblarg.oblog.Logger
 
 class RobotContainer {
@@ -30,6 +31,7 @@ class RobotContainer {
     private val climber = MotorSubsystem(listOf(Consts.Climber.LEFT_MOTOR, Consts.Climber.RIGHT_MOTOR))
     private val pivot = Pivot()
     private val shooter = Shooter(Consts.Shooter.LEFT_MOTOR, Consts.Shooter.RIGHT_MOTOR)
+    private val frontCam = FrontCamera()
 
 
     private val table = NetworkTableInstance.getDefault()
@@ -82,7 +84,6 @@ class RobotContainer {
 
         JoystickButton(primaryController, Button.kX.value).whenPressed(ToggleLightCommand(Robot.light))
 
-
         JoystickButton(primaryController, Button.kA.value).whileHeld(MotorCommand(climber, -1.0, 0)) // run the left climber motor
         JoystickButton(primaryController, Button.kB.value).whileHeld(MotorCommand(climber, -1.0, 1)) // run the right climber motor
         JoystickButton(primaryController, Button.kStickLeft.value).whileHeld(MotorCommand(climber, 1.0, 0, false))
@@ -91,7 +92,7 @@ class RobotContainer {
                 driveTrain,
                 1.0/70.0,
                 (Consts.DriveTrain.ksVolts + 0.3)/12,
-                {cameraTable.getEntry("targetYaw").getDouble(0.0)},
+                {frontCam.lineUpAngle()},
                 {input -> driveTrain.curvatureDrive(0.0, input, true)}
         ))
 

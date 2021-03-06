@@ -40,7 +40,7 @@ class FrontCamera {
         frontCamera.setResolution(640, 480)
     }
 
-    fun lineUpAngle() {
+    fun lineUpAngle(): Double {
         cvSink.grabFrame(imgMat)
         Imgproc.cvtColor(imgMat, imgMat, Imgproc.COLOR_BGR2HSV)
         Core.inRange(imgMat, lowerBound, upperBound, mask)
@@ -53,11 +53,11 @@ class FrontCamera {
         distance = abs(imageCenter-xCenter)
         angle = atan(distance/(2*focalLength))
 
-        println("Center of Image " + imageCenter)
-        println("Distance Between "+ distance)
-        println("Angle Between " + angle)
+        println("Center of Image: " + imageCenter)
+        println("Distance Between: "+ distance)
+        println("Angle Between: " + angle)
 
-
+        return angle
 
     }
 
