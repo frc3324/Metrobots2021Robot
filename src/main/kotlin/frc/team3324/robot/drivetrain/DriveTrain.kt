@@ -89,6 +89,8 @@ class DriveTrain: SubsystemBase(), Loggable {
         get() = diffDriveOdometry.poseMeters
     val wheelSpeeds: DifferentialDriveWheelSpeeds
         get() = DifferentialDriveWheelSpeeds(leftEncoderSpeed, rightEncoderSpeed)
+    val autoWheelSpeeds: DifferentialDriveWheelSpeeds
+        get() = DifferentialDriveWheelSpeeds(leftEncoderSpeed, -rightEncoderSpeed)
 
     val leftPIDController = PIDController(2.95, 0.0, 0.0)
     val rightPIDController = PIDController(2.95, 0.0, 0.0)
@@ -221,5 +223,10 @@ class DriveTrain: SubsystemBase(), Loggable {
         lmMotor.setVoltage(leftVolts)
         rmMotor.setVoltage(-rightVolts)
         drive.feed()
+    }
+
+    fun resetEncoders() {
+        rightEncoder.position = 0.0
+        leftEncoder.position = 0.0
     }
 }

@@ -40,16 +40,21 @@ class Robot: TimedRobot() {
     override fun teleopInit() {
         enabledInit()
         CommandScheduler.getInstance().cancelAll()
-        //robotContainer.driveTrain.resetOdometry(Trajectories.GalacticAR.trajectory.initialPose)
+
+        // reset things for auto testing
+        robotContainer.driveTrain.resetEncoders()
+        robotContainer.driveTrain.resetOdometry(Trajectories.TestLine.trajectory.initialPose)
     }
 
 
     override fun autonomousInit() {
-        val trajectory = Trajectories.GalacticAR.trajectory
-        if (trajectory != null) {
-            robotContainer.getRamseteCommand(trajectory).schedule()
-        }
+        val trajectory = robotContainer.selectedTrajectory()
+
+        robotContainer.driveTrain.resetEncoders()
+        robotContainer.driveTrain.resetOdometry(trajectory.initialPose)
+        robotContainer.getRamseteCommand(trajectory).schedule()
     }
+
     override fun teleopPeriodic() {
     }
 

@@ -42,7 +42,7 @@ object Consts {
         val kDriveKinematics = DifferentialDriveKinematics(kTrackwidthMeters)
 
         // feedback gains
-        const val kP = 11.4
+        const val kP = 1.0 //11.4
         const val kD = 0.0
 
         const val HIGH_GEAR_MAX_ACCELERATION = 2.00

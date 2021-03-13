@@ -16,7 +16,10 @@ import io.github.oblarg.oblog.Logger
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil
 import edu.wpi.first.wpilibj.Filesystem
+import edu.wpi.first.wpilibj.geometry.Pose2d
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import edu.wpi.first.wpilibj.spline.PoseWithCurvature
 import frc.team3324.robot.util.Consts
 import java.nio.file.Path
 import java.util.function.BiConsumer
@@ -64,13 +67,16 @@ class RobotContainer {
        driveTrain.defaultCommand = Drive(driveTrain, {primaryController.getY(GenericHID.Hand.kLeft)}, {primaryController.getX(GenericHID.Hand.kRight)})
        navChooser.setDefaultOption("Test Line", Trajectories.TestLine.trajectory)
        navChooser.addOption("Galactic A_R", Trajectories.GalacticAR.trajectory)
+       navChooser.addOption("Galactic A_B", Trajectories.GalacticAB.trajectory)
+       navChooser.addOption("Galactic B_R", Trajectories.GalacticBR.trajectory)
+       navChooser.addOption("Galactic B_B", Trajectories.GalacticBB.trajectory)
+
        SmartDashboard.putData(navChooser)
 
        configureButtonBindings()
    }
 
     private fun configureButtonBindings() {
-        //JoystickButton(primaryController, Button.kA.value).whenPressed(MeterForward(driveTrain, TrapezoidProfile.State(6.0, 0.0)))
         JoystickButton(primaryController, Button.kB.value).whenPressed(getRamseteCommand(navChooser.selected))
 
         JoystickButton(primaryController, Button.kStart.value).whenPressed(Runnable{driveTrain.resetOdometry(navChooser.selected.initialPose)}, driveTrain)
@@ -86,32 +92,49 @@ class RobotContainer {
 
 
     fun rumbleController(rumbleLevel: Double) {
-
         secondaryController.setRumble(GenericHID.RumbleType.kRightRumble, rumbleLevel)
     }
 
     fun getRamseteCommand(trajectory: Trajectory): Command {
 
-        driveTrain.resetOdometry(trajectory.initialPose)
+        val disabledRamsete = object : RamseteController() {
+            override fun calculate(currentPose: Pose2d, poseRef: Pose2d, linearVelocityRefMeters: Double, angularVelocityRefRadiansPerSecond: Double): ChassisSpeeds {
+                return ChassisSpeeds(linearVelocityRefMeters, 0.0, angularVelocityRefRadiansPerSecond)
+            }
+        }
+
+        val leftController = PIDController(Consts.DriveTrain.kP, 0.0, 0.0)
+        val rightController = PIDController(Consts.DriveTrain.kP, 0.0, 0.0)
 
         val ramseteCommand = RamseteCommand(
                 trajectory,
-                Supplier { driveTrain.pose },
+                driveTrain::pose,
                 RamseteController(Consts.DriveTrain.kRamseteB, Consts.DriveTrain.kRamseteZeta),
                 SimpleMotorFeedforward(Consts.DriveTrain.ksVolts,
                                         Consts.DriveTrain.LOW_GEAR_KV,
                                         Consts.DriveTrain.LOW_GEAR_KA),
                 Consts.DriveTrain.kDriveKinematics,
-                Supplier { driveTrain.wheelSpeeds },
-                PIDController(Consts.DriveTrain.kP, 0.0, 0.0),
-                PIDController(Consts.DriveTrain.kP, 0.0, 0.0),
-                BiConsumer { t, u ->  driveTrain.tankDriveVolts(t, u)},
-                driveTrain
+                driveTrain::wheelSpeeds,
+                leftController,
+                rightController,
+                {leftVolts: Double, rightVolts: Double ->
+                    driveTrain.tankDriveVolts(leftVolts, rightVolts)
+
+                    SmartDashboard.putNumber("Left Measurement", driveTrain.autoWheelSpeeds.leftMetersPerSecond)
+                    SmartDashboard.putNumber("Left Reference", leftController.setpoint)
+
+                    SmartDashboard.putNumber("Right Measurement", driveTrain.autoWheelSpeeds.rightMetersPerSecond)
+                    SmartDashboard.putNumber("Right Reference", rightController.setpoint)
+                },
+                arrayOf(driveTrain)
         )
 
-        return ramseteCommand.andThen(Runnable{driveTrain.tankDriveVolts(0.0, 0.0)}, driveTrain)
+        return ramseteCommand.andThen({driveTrain.tankDriveVolts(0.0, 0.0)}, arrayOf(driveTrain))
     }
 
+    fun selectedTrajectory():Trajectory {
+        return navChooser.selected
+    }
 
     fun importTrajectory(navPath: String): Trajectory {
         var path = "paths/" + navPath
