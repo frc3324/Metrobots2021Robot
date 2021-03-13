@@ -9,8 +9,6 @@ import frc.team3324.robot.util.RearCamera
  * <p>If you change your main robot class, change the parameter type.
  */
     fun main() {
-       // RobotBase.startRobot(::Robot)
-        val rearCamera = RearCamera()
-        rearCamera.rearCamera()
+       RobotBase.startRobot(::Robot)
     }
 

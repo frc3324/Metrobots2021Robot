@@ -29,22 +29,20 @@ class RearCamera {
         val kernel: Mat = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(7.0, 7.0))
         val opening = Mat()
         Imgproc.morphologyEx(mask, opening, Imgproc.MORPH_OPEN, kernel)
-        val contourList: List<MatOfPoint> = ArrayList<MatOfPoint>()
+        val contourList = ArrayList<MatOfPoint>()
         val hierarchy = Mat()
         Imgproc.findContours(opening, contourList, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
         Imgproc.drawContours(img, contourList, -1, Scalar(255.0, 0.0, 0.0), 2, Imgproc.LINE_8, hierarchy, 2, Point())
 
-        val height = capture.get(3)
         val width = capture.get(4)
-        val centerY = height / 2
         val centerX = width / 2
 
-        var contourCenter = mutableListOf<Int>()
-        var checkContour = mutableListOf<Boolean>()
+        val contourCenter = mutableListOf<Int>()
+        val checkContour = mutableListOf<Boolean>()
 
         for (contour in contourList) {
-            var moment = Imgproc.moments(contour)
-            contourCenter.add((moment._m10 / moment._m00).toInt());
+            val moment = Imgproc.moments(contour)
+            contourCenter.add((moment._m10 / moment._m00).toInt())
         }
 
         for (contour in contourCenter) {
@@ -55,8 +53,42 @@ class RearCamera {
             }
         }
 
-        println(contourList.count())
-
         return checkContour.count { true } > checkContour.count { false }
+    }
+
+    fun contourSize(): Double {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
+
+        val capture = VideoCapture(0)
+        capture.set(3, 720.0)
+        capture.set(4, 1280.0)
+
+        val img = Mat()
+        capture.read(img)
+        //val img = Imgcodecs.imread("C:\\Users\\walden\\Documents\\GitHub\\Robotics2021Vision\\Red-A.jpg")
+
+        val hsvImg = Mat()
+        Imgproc.cvtColor(img, hsvImg, COLOR_BGR2HSV)
+
+        val lowerYellow = Scalar(29.0, 4.0, 192.0)
+        val upperYellow = Scalar(51.0, 62.0, 255.0)
+        val mask = Mat()
+        Core.inRange(hsvImg, lowerYellow, upperYellow, mask)
+        val kernel: Mat = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(7.0, 7.0))
+        val opening = Mat()
+        Imgproc.morphologyEx(mask, opening, Imgproc.MORPH_OPEN, kernel)
+        val contourList = ArrayList<MatOfPoint>()
+        val hierarchy = Mat()
+        Imgproc.findContours(opening, contourList, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
+        Imgproc.drawContours(img, contourList, -1, Scalar(255.0, 0.0, 0.0), 2, Imgproc.LINE_8, hierarchy, 2, Point())
+
+        var maxVal = 0.0
+        for (contourIdx in contourList.indices) {
+            val contourArea = Imgproc.contourArea(contourList[contourIdx])
+            if (maxVal < contourArea) {
+                maxVal = contourArea
+            }
+        }
+        return maxVal
     }
 }
