@@ -5,7 +5,6 @@ import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
 import org.opencv.imgproc.Imgproc.COLOR_BGR2HSV
 import org.opencv.videoio.VideoCapture
-import org.opencv.core.Mat
 
 class RearCamera {
     fun rearCamera(): Boolean {
