@@ -32,7 +32,8 @@ object Trajectories {
         private val interiorPoses = listOf(
                 Translation2d(Units.feetToMeters(7.5), Units.feetToMeters(15.0-7.5)),  // ball 1
                 Translation2d(Units.feetToMeters(12.5), Units.feetToMeters(15.0-5.0)), // ball 2
-                Translation2d(Units.feetToMeters(15.0), Units.feetToMeters(15.0-12.5)) // ball 3
+                Translation2d(Units.feetToMeters(15.0), Units.feetToMeters(15.0-12.5)), // ball 3
+                Translation2d(Units.feetToMeters(24.5), Units.feetToMeters(15.0-7.5)) // line up for finish
         )
 
         private val endPose = Pose2d(Units.feetToMeters(25.0), Units.feetToMeters(15.0-12.5), Rotation2d.fromDegrees(0.0)) // end at 25 to not slam into wall
@@ -46,6 +47,7 @@ object Trajectories {
 
 
         private val interiorPoses = listOf(
+                Translation2d(Units.feetToMeters(6.0), Units.feetToMeters(15.0-7.5)), // move out of start
                 Translation2d(Units.feetToMeters(15.0), Units.feetToMeters(15.0-2.5)),  // ball 1
                 Translation2d(Units.feetToMeters(17.5), Units.feetToMeters(15.0-10.0)), // ball 2
                 Translation2d(Units.feetToMeters(22.5), Units.feetToMeters(15.0-7.5)) // ball 3
@@ -61,9 +63,11 @@ object Trajectories {
         private val startPose = Pose2d(Units.feetToMeters(0.0), Units.feetToMeters(7.5), Rotation2d.fromDegrees(0.0)) // should x be half of robot length?
 
         private val interiorPoses = listOf(
+                Translation2d(Units.feetToMeters(6.0), Units.feetToMeters(15.0-7.5)), // move out of start
                 Translation2d(Units.feetToMeters(7.5), Units.feetToMeters(15.0-10.0)),  // ball 1
                 Translation2d(Units.feetToMeters(12.5), Units.feetToMeters(15.0-5.0)), // ball 2
-                Translation2d(Units.feetToMeters(17.5), Units.feetToMeters(15.0-10.5)) // ball 3
+                Translation2d(Units.feetToMeters(17.5), Units.feetToMeters(15.0-10.5)), // ball 3
+                Translation2d(Units.feetToMeters(24.5), Units.feetToMeters(15.0-7.5)) // line up for finish
         )
 
         private val endPose = Pose2d(Units.feetToMeters(25.0), Units.feetToMeters(15.0-10.0), Rotation2d.fromDegrees(0.0))
@@ -77,15 +81,85 @@ object Trajectories {
 
 
         private val interiorPoses = listOf(
+                Translation2d(Units.feetToMeters(6.0), Units.feetToMeters(15.0-7.5)), // move out of start
                 Translation2d(Units.feetToMeters(15.0), Units.feetToMeters(15.0-5.0)),  // ball 1
                 Translation2d(Units.feetToMeters(17.5), Units.feetToMeters(15.0-10.0)), // ball 2
-                Translation2d(Units.feetToMeters(22.5), Units.feetToMeters(15.0-5.0)) // ball 3
+                Translation2d(Units.feetToMeters(22.5), Units.feetToMeters(15.0-5.0)), // ball 3
+                Translation2d(Units.feetToMeters(24.5), Units.feetToMeters(15.0-7.5)) // line up for finish
         )
 
         private val endPose = Pose2d(Units.feetToMeters(25.0), Units.feetToMeters(15.0-5.0), Rotation2d.fromDegrees(0.0))
 
         val trajectory = TrajectoryGenerator.generateTrajectory(startPose, interiorPoses, endPose, config)
     }
+
+    object BarrelRacingPath {
+        private val startPose = Pose2d(Units.feetToMeters(0.0), Units.feetToMeters(7.5), Rotation2d.fromDegrees(0.0)) // should x be half of robot length?
+
+
+        private val interiorPoses = listOf(
+            Translation2d(Units.feetToMeters(14.5), Units.feetToMeters(7.5)),  // D5 loop start
+            Translation2d(Units.feetToMeters(14.5), Units.feetToMeters(12.0)),
+            Translation2d(Units.feetToMeters(10.5), Units.feetToMeters(12.0)),
+            Translation2d(Units.feetToMeters(10.5), Units.feetToMeters(7.5)), // D5 loop end
+            Translation2d(Units.feetToMeters(22.0), Units.feetToMeters(7.5)), // B8 loop start
+            Translation2d(Units.feetToMeters(22.0), Units.feetToMeters(3.0)),
+            Translation2d(Units.feetToMeters(18.0), Units.feetToMeters(3.0)),
+            Translation2d(Units.feetToMeters(18.0), Units.feetToMeters(7.5)), // B8 loop end
+            Translation2d(Units.feetToMeters(22.5), Units.feetToMeters(11.5)), // D10 loop start
+            Translation2d(Units.feetToMeters(27.0), Units.feetToMeters(11.5)),
+            Translation2d(Units.feetToMeters(27.0), Units.feetToMeters(7.5)), //D10 loop end
+        )
+
+        private val endPose = Pose2d(Units.feetToMeters(25.0), Units.feetToMeters(7.5), Rotation2d.fromDegrees(180.0))
+
+        val trajectory = TrajectoryGenerator.generateTrajectory(startPose, interiorPoses, endPose, config)
+    }
+
+    object BouncePath {
+        private val startPose = Pose2d(Units.feetToMeters(0.0), Units.feetToMeters(7.5), Rotation2d.fromDegrees(0.0)) // should x be half of robot length?
+
+
+        private val interiorPoses = listOf(
+            Translation2d(Units.feetToMeters(6.0), Units.feetToMeters(7.5)), // move out of start
+            Translation2d(Units.feetToMeters(7.5), Units.feetToMeters(2.5)),  // A3
+            Translation2d(Units.feetToMeters(8.5), Units.feetToMeters(7.5)),
+            Translation2d(Units.feetToMeters(11.0), Units.feetToMeters(12.0)),
+            Translation2d(Units.feetToMeters(15.0), Units.feetToMeters(12.0)),
+            Translation2d(Units.feetToMeters(15.0), Units.feetToMeters(2.5)), // A6
+            Translation2d(Units.feetToMeters(16.0), Units.feetToMeters(12.0)),
+            Translation2d(Units.feetToMeters(21.5), Units.feetToMeters(12.0)),
+            Translation2d(Units.feetToMeters(22.5), Units.feetToMeters(2.5)), // A9
+            Translation2d(Units.feetToMeters(24.5), Units.feetToMeters(7.5)) // line up for finish
+        )
+
+        private val endPose = Pose2d(Units.feetToMeters(0.0), Units.feetToMeters(7.5), Rotation2d.fromDegrees(0.0))
+
+        val trajectory = TrajectoryGenerator.generateTrajectory(startPose, interiorPoses, endPose, config)
+    }
+
+    object SlalomPath {
+        private val startPose = Pose2d(Units.feetToMeters(0.0), Units.feetToMeters(12.5), Rotation2d.fromDegrees(0.0)) // should x be half of robot length?
+
+
+        private val interiorPoses = listOf(
+            Translation2d(Units.feetToMeters(7.5), Units.feetToMeters(12.5)), // move out of start
+            Translation2d(Units.feetToMeters(7.5), Units.feetToMeters(7.5)),  // D4-8 loop start
+            Translation2d(Units.feetToMeters(22.5), Units.feetToMeters(7.5)), // D10 loop start
+            Translation2d(Units.feetToMeters(22.5), Units.feetToMeters(12.5)),
+            Translation2d(Units.feetToMeters(27.5), Units.feetToMeters(12.5)),
+            Translation2d(Units.feetToMeters(27.5), Units.feetToMeters(7.5)),
+            Translation2d(Units.feetToMeters(22.5), Units.feetToMeters(7.5)),
+            Translation2d(Units.feetToMeters(22.5), Units.feetToMeters(12.5)), // D10 loop end
+            Translation2d(Units.feetToMeters(7.5), Units.feetToMeters(12.5)),
+            Translation2d(Units.feetToMeters(7.5), Units.feetToMeters(7.5)) // D4-8 loop end
+        )
+
+        private val endPose = Pose2d(Units.feetToMeters(0.0), Units.feetToMeters(7.5), Rotation2d.fromDegrees(180.0))
+
+        val trajectory = TrajectoryGenerator.generateTrajectory(startPose, interiorPoses, endPose, config)
+    }
+
 
     object TestLine {
         private val startPose = Pose2d(Units.feetToMeters(0.0), Units.feetToMeters(7.5), Rotation2d.fromDegrees(0.0)) // should x be half of robot length?

@@ -70,6 +70,9 @@ class RobotContainer {
        navChooser.addOption("Galactic A_B", Trajectories.GalacticAB.trajectory)
        navChooser.addOption("Galactic B_R", Trajectories.GalacticBR.trajectory)
        navChooser.addOption("Galactic B_B", Trajectories.GalacticBB.trajectory)
+       navChooser.addOption("Bounce Path", Trajectories.BouncePath.trajectory)
+       navChooser.addOption("Barrel Racing Path", Trajectories.BarrelRacingPath.trajectory)
+       navChooser.addOption("Slalom Path", Trajectories.SlalomPath.trajectory)
 
        SmartDashboard.putData(navChooser)
 
