@@ -77,11 +77,10 @@ class RobotContainer {
    }
 
     private fun configureButtonBindings() {
-        JoystickButton(primaryController, Button.kBumperLeft.value).whenPressed(MotorCommand(pivot, -0.6).andThen(MotorCommand(pivot, -0.15)))
-        JoystickButton(primaryController, Button.kBumperRight.value).whenPressed(MotorCommand(pivot, 0.6).andThen(MotorCommand(pivot, 0.15)))
+        JoystickButton(primaryController, Button.kBumperLeft.value).whenPressed(MotorCommand(pivot, -0.4).andThen(MotorCommand(pivot, -0.15)))
+        JoystickButton(primaryController, Button.kBumperRight.value).whenPressed(MotorCommand(pivot, 0.4).andThen(MotorCommand(pivot, 0.15)))
 
         JoystickButton(primaryController, Button.kX.value).whenPressed(ToggleLightCommand(Robot.light))
-
 
         JoystickButton(primaryController, Button.kA.value).whileHeld(MotorCommand(climber, -1.0, 0)) // run the left climber motor
         JoystickButton(primaryController, Button.kB.value).whileHeld(MotorCommand(climber, -1.0, 1)) // run the right climber motor
