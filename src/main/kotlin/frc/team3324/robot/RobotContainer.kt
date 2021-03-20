@@ -77,8 +77,8 @@ class RobotContainer {
    }
 
     private fun configureButtonBindings() {
-        JoystickButton(primaryController, Button.kBumperLeft.value).whenPressed(MotorCommand(pivot, -0.4,finishedCondition = {!pivot.upperLimitSwitch.get()}))
-        JoystickButton(primaryController, Button.kBumperRight.value).whenPressed(MotorCommand(pivot, 0.4,finishedCondition = {!pivot.lowerLimitSwitch.get()}))
+        JoystickButton(primaryController, Button.kBumperLeft.value).whenPressed(MotorCommand(pivot, -0.6).andThen(MotorCommand(pivot, -0.15)))
+        JoystickButton(primaryController, Button.kBumperRight.value).whenPressed(MotorCommand(pivot, 0.6).andThen(MotorCommand(pivot, 0.15)))
 
         JoystickButton(primaryController, Button.kX.value).whenPressed(ToggleLightCommand(Robot.light))
 
@@ -98,8 +98,8 @@ class RobotContainer {
 
         JoystickButton(secondaryController, Button.kX.value).whenPressed(RunShooter(shooter, {cameraTable.getEntry("targetArea").getDouble(3800.0)}, false).withTimeout(10.0))
         JoystickButton(secondaryController, Button.kY.value).whenPressed(RunShooter(shooter, {cameraTable.getEntry("targetArea").getDouble(3800.0)}, true).withTimeout(10.0))
-        JoystickButton(secondaryController, Button.kBumperLeft.value).whileHeld(MotorCommand(storage, 0.799999998, 0, false).alongWith(MotorCommand(storage, 0.6, 1, false)).alongWith(MotorCommand(intake, -1.0)))
-        JoystickButton(secondaryController, Button.kBumperRight.value).whileHeld(MotorCommand(storage, -0.799999998, 0, false).alongWith(MotorCommand(storage, -0.6, 1, false)).alongWith(MotorCommand(intake, 1.0)))
+        JoystickButton(secondaryController, Button.kBumperLeft.value).whileHeld(MotorCommand(storage, 0.799999998, 0, false).alongWith(MotorCommand(storage, 0.6, 1, false)))
+        JoystickButton(secondaryController, Button.kBumperRight.value).whileHeld(MotorCommand(storage, -0.799999998, 0, false).alongWith(MotorCommand(storage, -0.6, 1, false)))
 
         JoystickButton(secondaryController, Button.kA.value).whileHeld(MotorCommand(intake, -1.0))
         JoystickButton(secondaryController, Button.kB.value).whileHeld(MotorCommand(intake, 1.0))
