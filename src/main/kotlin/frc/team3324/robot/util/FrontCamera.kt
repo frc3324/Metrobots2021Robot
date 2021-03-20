@@ -8,11 +8,12 @@ import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.core.Size
 import org.opencv.core.Scalar
+import org.opencv.videoio.VideoCapture
 import kotlin.math.abs
 import kotlin.math.atan
 
 class FrontCamera {
-    val frontCamera = CameraServer.getInstance().startAutomaticCapture(0)
+    val frontCamera = CameraServer.getInstance().startAutomaticCapture(1)
     val frontCameraName = frontCamera.name
     val cvSink: CvSink = CameraServer.getInstance().getVideo(frontCameraName)
 
@@ -42,6 +43,9 @@ class FrontCamera {
 
     fun lineUpAngle(): Double {
         cvSink.grabFrame(imgMat)
+        //val capture = VideoCapture(1)
+        //capture.read(imgMat)
+        //val cvtMat = Mat()
         Imgproc.cvtColor(imgMat, imgMat, Imgproc.COLOR_BGR2HSV)
         Core.inRange(imgMat, lowerBound, upperBound, mask)
         Imgproc.morphologyEx(mask, mask, Imgproc.MORPH_OPEN, kernel)

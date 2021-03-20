@@ -41,10 +41,12 @@ class Robot: TimedRobot() {
         CommandScheduler.getInstance().schedule(robotContainer.getAutoCommand())
         enabledInit()
     }
+
     override fun teleopInit() {
         enabledInit()
     }
 
     override fun teleopPeriodic() {
+        SmartDashboard.putNumber("Angle to Turn", robotContainer.frontCam.lineUpAngle())
     }
 }

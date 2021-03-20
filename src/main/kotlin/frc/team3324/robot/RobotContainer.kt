@@ -31,7 +31,7 @@ class RobotContainer {
     private val climber = MotorSubsystem(listOf(Consts.Climber.LEFT_MOTOR, Consts.Climber.RIGHT_MOTOR))
     private val pivot = Pivot()
     private val shooter = Shooter(Consts.Shooter.LEFT_MOTOR, Consts.Shooter.RIGHT_MOTOR)
-    private val frontCam = FrontCamera()
+    val frontCam = FrontCamera()
 
 
     private val table = NetworkTableInstance.getDefault()
