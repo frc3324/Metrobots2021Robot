@@ -80,4 +80,20 @@ object Consts {
 
         val MOTOR = MetroSparkMAX(8, CANSparkMaxLowLevel.MotorType.kBrushless, 20)
     }
+
+    object Vision {
+        val TARGET_HEIGHT_FT = 7.5625 // height of target center
+        val FRONT_CAMERA_ANGLE_DEG = 60.0
+        val FRONT_CAMERA_HEIGHT_FT = 31.0/12.0
+
+        val WIDTH = 320 // in pixels
+        val HEIGHT = 180
+
+        val VERTICAL_FOV_DEG = 34.3 // lifecam
+        val HORIZONTAL_FOV_DEG = 61.0
+
+        val HORIZONTAL_APP = HORIZONTAL_FOV_DEG / WIDTH // horizontal angle per pixel
+        val VERTICAL_APP = VERTICAL_FOV_DEG / HEIGHT // horizontal angle per pixel
+
+    }
 }

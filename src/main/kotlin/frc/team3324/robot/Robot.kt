@@ -43,6 +43,16 @@ class Robot: TimedRobot() {
     }
 
     override fun teleopInit() {
+        /*SmartDashboard.putNumber("LH", 0.0)
+        SmartDashboard.putNumber("LS", 0.0)
+        SmartDashboard.putNumber("LV", 0.0)
+        SmartDashboard.putNumber("UH", 0.0)
+        SmartDashboard.putNumber("US", 0.0)
+        SmartDashboard.putNumber("UV", 0.0)
+
+        SmartDashboard.putNumber("Erode", 0.0)
+        SmartDashboard.putNumber("Dilate", 0.0)*/
+
         enabledInit()
     }
 

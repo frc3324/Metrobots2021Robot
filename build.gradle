@@ -1,6 +1,6 @@
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.4.21"
-    id "edu.wpi.first.GradleRIO" version "2020.2.2"
+    id "edu.wpi.first.GradleRIO" version "2021.2.2"
 }
 
 def ROBOT_MAIN_CLASS = "frc.team3324.robot.MainKt"
