@@ -71,7 +71,7 @@ class RobotContainer {
        driveTrain.defaultCommand = Drive(driveTrain, {primaryController.getY(GenericHID.Hand.kLeft)}, {primaryController.getX(GenericHID.Hand.kRight)})
 
 
-       pivot.defaultCommand = MotorCommand(pivot, -0.10)
+       //pivot.defaultCommand = MotorCommand(pivot, -0.10)
        configureButtonBindings()
 
    }

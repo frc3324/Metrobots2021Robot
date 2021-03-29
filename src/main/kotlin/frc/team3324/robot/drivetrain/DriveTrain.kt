@@ -188,10 +188,10 @@ class DriveTrain: SubsystemBase(), Loggable {
     }
 
     fun curvatureDrive(xSpeed: Double, ySpeed: Double) {
-        if (xSpeed < 0.05) {
-            curvatureDrive(xSpeed, -ySpeed * 0.7, true)
+        if (xSpeed < 0.0025) {
+            curvatureDrive(xSpeed, -ySpeed * 0.35, true)
         } else {
-            curvatureDrive(xSpeed, -ySpeed * 0.5, false)
+            curvatureDrive(xSpeed, -ySpeed * 0.7, false)
         }
     }
 
