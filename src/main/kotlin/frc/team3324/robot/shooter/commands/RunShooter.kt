@@ -4,8 +4,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.CommandBase
 import frc.team3324.robot.Robot
 import frc.team3324.robot.shooter.Shooter
+import frc.team3324.robot.util.FrontCamera
+import kotlin.math.pow
 
-class RunShooter(val shooter: Shooter, val area: () -> Double, val trench: Boolean) : CommandBase() {
+class RunShooter(val shooter: Shooter, private val frontCamera: FrontCamera, val trench: Boolean) : CommandBase() {
 
     init {
         Robot.light.set(true)
@@ -13,12 +15,12 @@ class RunShooter(val shooter: Shooter, val area: () -> Double, val trench: Boole
     }
 
     override fun execute() {
-//        var rpm = 1116 * Math.pow(area(), -0.365)
-//        if (trench) {
-//            rpm = 1116 * Math.pow(area(), -0.338)
-//        }
-        val rpm = 4800.0
+        val area = frontCamera.contourArea()
+        var rpm = 4845 + -1.4*area + 0.000558*area.pow(2) - 100
+        val dashRPM = SmartDashboard.getNumber("Input RPM", 0.0)
+
         shooter.RPM = rpm
+
         SmartDashboard.putNumber("Goal RPM from shoot", rpm)
         Robot.robotContainer.rumbleController(1.0)
     }

@@ -38,7 +38,7 @@ class Robot: TimedRobot() {
     }
 
     override fun autonomousInit() {
-        CommandScheduler.getInstance().schedule(robotContainer.getAutoCommand())
+        //CommandScheduler.getInstance().schedule(robotContainer.getAutoCommand())
         enabledInit()
     }
 
@@ -52,11 +52,9 @@ class Robot: TimedRobot() {
 
         SmartDashboard.putNumber("Erode", 0.0)
         SmartDashboard.putNumber("Dilate", 0.0)*/
-
         enabledInit()
     }
 
     override fun teleopPeriodic() {
-        SmartDashboard.putNumber("Angle to Turn", robotContainer.frontCam.lineUpAngle())
     }
 }

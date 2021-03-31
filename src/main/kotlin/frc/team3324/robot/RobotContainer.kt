@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.*
 import edu.wpi.first.wpilibj.XboxController.Button
 import edu.wpi.first.wpilibj.controller.PIDController
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.PIDCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
@@ -82,7 +83,7 @@ class RobotContainer {
         JoystickButton(primaryController, Button.kBumperLeft.value).whenPressed(MotorCommand(pivot, -0.4,finishedCondition = {!pivot.upperLimitSwitch.get()}))
         JoystickButton(primaryController, Button.kBumperRight.value).whenPressed(MotorCommand(pivot, 0.4,finishedCondition = {!pivot.lowerLimitSwitch.get()}))
 
-        JoystickButton(primaryController, Button.kX.value).whenPressed(ToggleLightCommand(Robot.light))
+        JoystickButton(primaryController, Button.kX.value).whenPressed(frontCam::lineUpAngle)
 
         JoystickButton(primaryController, Button.kA.value).whileHeld(MotorCommand(climber, -1.0, 0)) // run the left climber motor
         JoystickButton(primaryController, Button.kB.value).whileHeld(MotorCommand(climber, -1.0, 1)) // run the right climber motor
@@ -97,8 +98,8 @@ class RobotContainer {
         ))
 
 
-        JoystickButton(secondaryController, Button.kX.value).whenPressed(RunShooter(shooter, {cameraTable.getEntry("targetArea").getDouble(3800.0)}, false).withTimeout(10.0))
-        JoystickButton(secondaryController, Button.kY.value).whenPressed(RunShooter(shooter, {cameraTable.getEntry("targetArea").getDouble(3800.0)}, true).withTimeout(10.0))
+        JoystickButton(secondaryController, Button.kX.value).whenPressed(RunShooter(shooter, frontCam,false).withTimeout(10.0))
+        JoystickButton(secondaryController, Button.kY.value).whenPressed(RunShooter(shooter, frontCam,true).withTimeout(10.0))
         JoystickButton(secondaryController, Button.kBumperLeft.value).whileHeld(MotorCommand(storage, 0.799999998, 0, false).alongWith(MotorCommand(storage, 0.6, 1, false)).alongWith(MotorCommand(intake, 1.0)))
         JoystickButton(secondaryController, Button.kBumperRight.value).whileHeld(MotorCommand(storage, -0.799999998, 0, false).alongWith(MotorCommand(storage, -0.6, 1, false)).alongWith(MotorCommand(intake, -1.0)))
 
@@ -116,7 +117,7 @@ class RobotContainer {
     fun rumbleController(rumbleLevel: Double) {
         secondaryController.setRumble(GenericHID.RumbleType.kRightRumble, rumbleLevel)
     }
-    fun getAutoCommand(): Command {
-        return FinalAutoGroup(pivot, driveTrain, shooter, storage, cameraTable)
-    }
+    /*fun getAutoCommand(): Command {
+        //return FinalAutoGroup(pivot, driveTrain, shooter, storage, frontCam)
+    }*/
 }
