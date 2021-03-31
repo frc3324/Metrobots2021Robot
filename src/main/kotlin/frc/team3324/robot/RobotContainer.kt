@@ -3,13 +3,8 @@ package frc.team3324.robot
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.*
 import edu.wpi.first.wpilibj.XboxController.Button
-import edu.wpi.first.wpilibj.controller.PIDController
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
-import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.PIDCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.team3324.library.commands.MotorCommand
-import frc.team3324.robot.autocommands.FinalAutoGroup
 import frc.team3324.robot.drivetrain.DriveTrain
 import frc.team3324.robot.drivetrain.commands.teleop.Drive
 import frc.team3324.robot.drivetrain.commands.teleop.GyroTurn
@@ -20,9 +15,9 @@ import frc.team3324.robot.shooter.commands.RunShooter
 import frc.team3324.robot.shooter.commands.StopShooter
 import frc.team3324.robot.util.Camera
 import frc.team3324.robot.util.Consts
-import frc.team3324.library.commands.ToggleLightCommand
 import frc.team3324.library.subsystems.MotorSubsystem
 import frc.team3324.robot.util.FrontCamera
+import frc.team3324.robot.util.RearCamera
 import io.github.oblarg.oblog.Logger
 
 class RobotContainer {
@@ -32,11 +27,11 @@ class RobotContainer {
     private val climber = MotorSubsystem(listOf(Consts.Climber.LEFT_MOTOR, Consts.Climber.RIGHT_MOTOR))
     private val pivot = Pivot()
     private val shooter = Shooter(Consts.Shooter.LEFT_MOTOR, Consts.Shooter.RIGHT_MOTOR)
-    val frontCam = FrontCamera()
+    private val frontCam = FrontCamera()
+    private val rearCam = RearCamera()
 
 
     private val table = NetworkTableInstance.getDefault()
-    private val cameraTable = table.getTable("chameleon-vision").getSubTable("usb")
 
     private val primaryController = XboxController(0)
     private val secondaryController = XboxController(1)
@@ -83,7 +78,7 @@ class RobotContainer {
         JoystickButton(primaryController, Button.kBumperLeft.value).whenPressed(MotorCommand(pivot, -0.4,finishedCondition = {!pivot.upperLimitSwitch.get()}))
         JoystickButton(primaryController, Button.kBumperRight.value).whenPressed(MotorCommand(pivot, 0.4,finishedCondition = {!pivot.lowerLimitSwitch.get()}))
 
-        JoystickButton(primaryController, Button.kX.value).whenPressed(frontCam::lineUpAngle)
+        JoystickButton(primaryController, Button.kX.value).whenPressed(rearCam::getRedOrBlue)
 
         JoystickButton(primaryController, Button.kA.value).whileHeld(MotorCommand(climber, -1.0, 0)) // run the left climber motor
         JoystickButton(primaryController, Button.kB.value).whileHeld(MotorCommand(climber, -1.0, 1)) // run the right climber motor
@@ -117,6 +112,7 @@ class RobotContainer {
     fun rumbleController(rumbleLevel: Double) {
         secondaryController.setRumble(GenericHID.RumbleType.kRightRumble, rumbleLevel)
     }
+
     /*fun getAutoCommand(): Command {
         //return FinalAutoGroup(pivot, driveTrain, shooter, storage, frontCam)
     }*/

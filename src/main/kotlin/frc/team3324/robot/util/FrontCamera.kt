@@ -9,7 +9,7 @@ import kotlin.math.abs
 class FrontCamera {
     var frontCamera = CameraServer.getInstance().startAutomaticCapture(1)
     val cvSink: CvSink = CameraServer.getInstance().getVideo(frontCamera.name)
-    val cvSource = CameraServer.getInstance().putVideo("Mask", Consts.Vision.WIDTH, Consts.Vision.HEIGHT)
+    val cvSource = CameraServer.getInstance().putVideo("Upper Target", Consts.Vision.WIDTH, Consts.Vision.HEIGHT)
 
     var contours = ArrayList<MatOfPoint>()
 
@@ -39,7 +39,19 @@ class FrontCamera {
         frontCamera.setExposureManual(20)
     }
 
-    fun dashboardHSV():Array<Any> {
+    fun putShuffleboardHSV() {
+        SmartDashboard.putNumber("LH", 0.0)
+        SmartDashboard.putNumber("LS", 0.0)
+        SmartDashboard.putNumber("LV", 0.0)
+        SmartDashboard.putNumber("UH", 0.0)
+        SmartDashboard.putNumber("US", 0.0)
+        SmartDashboard.putNumber("UV", 0.0)
+
+        SmartDashboard.putNumber("Erode", 0.0)
+        SmartDashboard.putNumber("Dilate", 0.0)
+    }
+
+    fun getShuffleboardHSV():Array<Any> {
         lowerHSV = Scalar(SmartDashboard.getNumber("LH", 0.0), SmartDashboard.getNumber("LS", 0.0), SmartDashboard.getNumber("LV", 0.0))
         upperHSV = Scalar(SmartDashboard.getNumber("UH", 0.0), SmartDashboard.getNumber("US", 0.0), SmartDashboard.getNumber("UV", 0.0))
 

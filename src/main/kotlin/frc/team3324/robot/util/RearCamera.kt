@@ -1,93 +1,91 @@
 package frc.team3324.robot.util
 
+import edu.wpi.cscore.CvSink
+import edu.wpi.first.cameraserver.CameraServer
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.opencv.core.*
 import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
-import org.opencv.imgproc.Imgproc.COLOR_BGR2HSV
 import org.opencv.videoio.VideoCapture
 
 class RearCamera {
-    fun rearCamera(): Boolean {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
+    var rearCamera = CameraServer.getInstance().startAutomaticCapture(0)
+    val cvSink: CvSink = CameraServer.getInstance().getVideo(rearCamera.name)
+    // val cvSource = CameraServer.getInstance().putVideo("Power Cells", Consts.Vision.WIDTH, Consts.Vision.HEIGHT)
 
-        val capture = VideoCapture(0)
-        capture.set(3, 720.0)
-        capture.set(4, 1280.0)
 
-        val img = Mat()
-        capture.read(img)
-        //val img = Imgcodecs.imread("C:\\Users\\walden\\Documents\\GitHub\\Robotics2021Vision\\Red-A.jpg")
+    var contours = ArrayList<MatOfPoint>()
 
-        val hsvImg = Mat()
-        Imgproc.cvtColor(img, hsvImg, COLOR_BGR2HSV)
+    var img = Mat()
+    var mask = Mat()
+    val kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(3.0, 3.0))
 
-        val lowerYellow = Scalar(29.0, 4.0, 192.0)
-        val upperYellow = Scalar(51.0, 62.0, 255.0)
-        val mask = Mat()
-        Core.inRange(hsvImg, lowerYellow, upperYellow, mask)
-        val kernel: Mat = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(7.0, 7.0))
-        val opening = Mat()
-        Imgproc.morphologyEx(mask, opening, Imgproc.MORPH_OPEN, kernel)
-        val contourList = ArrayList<MatOfPoint>()
-        val hierarchy = Mat()
-        Imgproc.findContours(opening, contourList, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
-        Imgproc.drawContours(img, contourList, -1, Scalar(255.0, 0.0, 0.0), 2, Imgproc.LINE_8, hierarchy, 2, Point())
-
-        val width = capture.get(4)
-        val centerX = width / 2
-
-        val contourCenter = mutableListOf<Int>()
-        val checkContour = mutableListOf<Boolean>()
-
-        for (contour in contourList) {
-            val moment = Imgproc.moments(contour)
-            contourCenter.add((moment._m10 / moment._m00).toInt())
-        }
-
-        for (contour in contourCenter) {
-            if (contour > centerX) {
-                checkContour.add(true)
-            } else {
-                checkContour.add(false)
-            }
-        }
-
-        return checkContour.count { true } > checkContour.count { false }
+    enum class Path {
+        RED,
+        BLUE
     }
 
-    fun contourSize(): Double {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
+    private var lowerHSV = Scalar(19.125, 127.5, 57.37499)
+    private var upperHSV = Scalar(81.875, 255.0, 255.0)
 
-        val capture = VideoCapture(0)
-        capture.set(3, 720.0)
-        capture.set(4, 1280.0)
+    var erodeIterations = 1
+    var dilateIterations = 2
 
-        val img = Mat()
-        capture.read(img)
-        //val img = Imgcodecs.imread("C:\\Users\\walden\\Documents\\GitHub\\Robotics2021Vision\\Red-A.jpg")
+    init {
+        rearCamera.setResolution(Consts.Vision.WIDTH, Consts.Vision.HEIGHT)
+        rearCamera.setExposureManual(35)
+    }
 
-        val hsvImg = Mat()
-        Imgproc.cvtColor(img, hsvImg, COLOR_BGR2HSV)
+    fun getContours() {
+        contours.clear()
+        cvSink.grabFrame(img)
 
-        val lowerYellow = Scalar(29.0, 4.0, 192.0)
-        val upperYellow = Scalar(51.0, 62.0, 255.0)
-        val mask = Mat()
-        Core.inRange(hsvImg, lowerYellow, upperYellow, mask)
-        val kernel: Mat = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(7.0, 7.0))
-        val opening = Mat()
-        Imgproc.morphologyEx(mask, opening, Imgproc.MORPH_OPEN, kernel)
-        val contourList = ArrayList<MatOfPoint>()
-        val hierarchy = Mat()
-        Imgproc.findContours(opening, contourList, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
-        Imgproc.drawContours(img, contourList, -1, Scalar(255.0, 0.0, 0.0), 2, Imgproc.LINE_8, hierarchy, 2, Point())
+        if (img.empty()) {
+            println("There is no input frame for rear camera")
+        }
+
+        try {
+            Imgproc.cvtColor(img, img, Imgproc.COLOR_BGR2HSV)
+
+            // image manipulation
+            Core.inRange(img, lowerHSV, upperHSV, mask)
+
+            for (i in 0..erodeIterations) {
+                Imgproc.erode(mask, mask, kernel)
+            }
+            for (i in 0..dilateIterations) {
+                Imgproc.dilate(mask, mask, kernel)
+            }
+
+            // cvSource.putFrame(mask)
+
+            // contour detection
+            Imgproc.findContours(mask, contours, Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE)
+        } catch(e: Exception) {
+            println("Exception: ${e.message}")
+        }
+    }
+
+    fun getRedOrBlue(): Path {
+        getContours()
 
         var maxVal = 0.0
-        for (contourIdx in contourList.indices) {
-            val contourArea = Imgproc.contourArea(contourList[contourIdx])
+        for (contour in contours) {
+            val contourArea = Imgproc.contourArea(contour)
             if (maxVal < contourArea) {
                 maxVal = contourArea
             }
         }
-        return maxVal
+
+        SmartDashboard.putNumber("Largest Contour Area", maxVal)
+
+        if (maxVal > 500) {
+            // Red Paths had an average max contour area of 938.76
+            SmartDashboard.putString("Path", "RED")
+            return Path.RED
+        }
+        // Blue Paths had an average max contour area of 199.5
+        SmartDashboard.putString("Path", "BLUE")
+        return Path.BLUE
     }
 }
