@@ -22,7 +22,6 @@ class Robot: TimedRobot() {
     }
 
     override fun robotInit() {
-        CameraServer.getInstance().startAutomaticCapture()
         LiveWindow.disableAllTelemetry()
         compressor.start()
     }
@@ -31,16 +30,16 @@ class Robot: TimedRobot() {
     }
 
     override fun robotPeriodic() {
-        CameraServer.getInstance().getVideo()
         CommandScheduler.getInstance().run()
         Logger.updateEntries()
         Logger.updateEntries()
     }
 
     override fun autonomousInit() {
-        CommandScheduler.getInstance().schedule(robotContainer.getAutoCommand())
+        //CommandScheduler.getInstance().schedule(robotContainer.getAutoCommand())
         enabledInit()
     }
+
     override fun teleopInit() {
         enabledInit()
     }

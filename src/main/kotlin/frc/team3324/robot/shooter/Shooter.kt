@@ -15,7 +15,7 @@ class Shooter(val leftMotor: MetroSparkMAX, val rightMotor: MetroSparkMAX): Moto
         private val leftEncoder = leftMotor.encoder
         private val rightEncoder = rightMotor.encoder
 
-        private val rpmChooser = SendableChooser<Double>()
+        val rpmChooser = SendableChooser<Double>()
 
         val rightEncoderPosition
             @Log
@@ -57,7 +57,7 @@ class Shooter(val leftMotor: MetroSparkMAX, val rightMotor: MetroSparkMAX): Moto
             set(speed) = leftMotor.set(speed)
 
         init {
-            SmartDashboard.putNumber("Numbah", 0.0)
+            SmartDashboard.putNumber("Input RPM", 0.0)
             rightMotor.follow(leftMotor as CANSparkMax, true)
 
             leftMotor.inverted = true
@@ -96,6 +96,6 @@ class Shooter(val leftMotor: MetroSparkMAX, val rightMotor: MetroSparkMAX): Moto
         }
 
         override fun periodic() {
-            RPM = SmartDashboard.getNumber("Numbah", 0.0)
+            // RPM = SmartDashboard.getNumber("Input RPM", 0.0)
         }
     }
