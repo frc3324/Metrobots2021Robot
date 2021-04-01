@@ -39,7 +39,7 @@ object Consts {
         const val kRamseteZeta = 0.7
 
         const val LOW_GEAR_MAX_VELOCITY = 12.0 / LOW_GEAR_KV
-        const val LOW_GEAR_MAX_ACCELERATION = 6.51
+        const val LOW_GEAR_MAX_ACCELERATION = 12.0 / LOW_GEAR_KA
 
 
         const val GEARSHIFTER_FORWARD = 6

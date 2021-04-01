@@ -3,6 +3,7 @@ package frc.team3324.robot
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.*
 import edu.wpi.first.wpilibj.XboxController.Button
+import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.team3324.library.commands.MotorCommand
 import frc.team3324.robot.drivetrain.DriveTrain
@@ -16,6 +17,7 @@ import frc.team3324.robot.shooter.commands.StopShooter
 import frc.team3324.robot.util.Camera
 import frc.team3324.robot.util.Consts
 import frc.team3324.library.subsystems.MotorSubsystem
+import frc.team3324.robot.autocommands.GalacticAutoGroup
 import frc.team3324.robot.util.FrontCamera
 import frc.team3324.robot.util.RearCamera
 import io.github.oblarg.oblog.Logger
@@ -75,8 +77,9 @@ class RobotContainer {
    }
 
     private fun configureButtonBindings() {
-        JoystickButton(primaryController, Button.kBumperLeft.value).whenPressed(MotorCommand(pivot, -0.4).andThen(MotorCommand(pivot, -0.15)))
-        JoystickButton(primaryController, Button.kBumperRight.value).whenPressed(MotorCommand(pivot, 0.4).andThen(MotorCommand(pivot, 0.15)))
+        JoystickButton(primaryController, Button.kBumperLeft.value).whenPressed(MotorCommand(pivot, -0.4, finishedCondition = {!pivot.lowerLimitSwitch.get()}).andThen(MotorCommand(pivot, -0.0)))
+        JoystickButton(primaryController, Button.kBumperRight.value).whenPressed(MotorCommand(pivot, 0.4, finishedCondition = {!pivot.upperLimitSwitch.get()}).andThen(MotorCommand(pivot, 0.15)))
+
 
         JoystickButton(primaryController, Button.kX.value).whenPressed(rearCam::getRedOrBlue)
 
@@ -114,6 +117,7 @@ class RobotContainer {
     }
 
     /*fun getAutoCommand(): Command {
+        //return GalacticAutoGroup(pivot, intake, )
         //return FinalAutoGroup(pivot, driveTrain, shooter, storage, frontCam)
     }*/
 }

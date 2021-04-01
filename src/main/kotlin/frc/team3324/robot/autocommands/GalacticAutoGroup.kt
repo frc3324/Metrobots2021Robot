@@ -10,6 +10,6 @@ import frc.team3324.robot.intake.Pivot
 class GalacticAutoGroup(pivot: Pivot, intake: MotorSubsystem, trajectory: Trajectory): SequentialCommandGroup() {
     init {
         // TODO: update command group to use trajectories after drivetrain_only merge
-        addCommands(MotorCommand(pivot, 0.4,finishedCondition = {!pivot.lowerLimitSwitch.get()}), robotContainer.getAutoCommand().alongWith(MotorCommand(intake, 1.0)))
+        //addCommands(MotorCommand(pivot, 0.4,finishedCondition = {!pivot.lowerLimitSwitch.get()}), robotContainer.getAutoCommand().alongWith(MotorCommand(intake, 1.0)))
     }
 }
