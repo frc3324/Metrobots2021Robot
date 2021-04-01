@@ -1,6 +1,6 @@
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.4.21"
-    id "edu.wpi.first.GradleRIO" version "2020.2.2"
+    id "edu.wpi.first.GradleRIO" version "2021.2.2"
 }
 
 def ROBOT_MAIN_CLASS = "frc.team3324.robot.MainKt"
@@ -54,6 +54,8 @@ dependencies {
     implementation wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
+
+//    compile group: 'org.openpnp', name: 'opencv', version: '3.4.2-0'
 
     // We need to add the Kotlin stdlib in order to use most Kotlin language features.
     implementation "org.jetbrains.kotlin:kotlin-stdlib"

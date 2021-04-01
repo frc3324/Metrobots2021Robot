@@ -27,16 +27,17 @@ object Consts {
         const val DISTANCE_PER_PULSE_LOW = CIRCUMFERENCE * LOW_GEAR_RATIO
         const val DISTANCE_BETWEEN_WHEELS = 0.61
 
-        const val ksVolts = 0.181
-        const val LOW_GEAR_KV = 4.9
-        const val HIGH_GEAR_KV = 2.28
-        const val LOW_GEAR_KA = 0.36
-        const val kaVoltSecondsSquaredPerMeter = 0.302
+        const val ksVolts = 0.189
+        const val LOW_GEAR_KV = 5.22
+        const val LOW_GEAR_KA = 0.892
+
+        const val TRACK_WIDTH = 0.6446045
+
+        const val OPTIMAL_KP = 1.64
+
         const val kRamseteB = 2.0
         const val kRamseteZeta = 0.7
 
-        const val HIGH_GEAR_MAX_VELOCITY = 12.0 / HIGH_GEAR_KV
-        const val HIGH_GEAR_MAX_ACCELERATION = 2.00
         const val LOW_GEAR_MAX_VELOCITY = 12.0 / LOW_GEAR_KV
         const val LOW_GEAR_MAX_ACCELERATION = 6.51
 
@@ -79,5 +80,21 @@ object Consts {
         val LOWER_LIMIT_SWITCH = DigitalInput(5)
 
         val MOTOR = MetroSparkMAX(8, CANSparkMaxLowLevel.MotorType.kBrushless, 20)
+    }
+
+    object Vision {
+        val TARGET_HEIGHT_FT = 7.5625 // height of target center
+        val FRONT_CAMERA_ANGLE_DEG = 60.0
+        val FRONT_CAMERA_HEIGHT_FT = 31.0/12.0
+
+        val WIDTH = 320 // in pixels
+        val HEIGHT = 180
+
+        val VERTICAL_FOV_DEG = 34.3 // lifecam
+        val HORIZONTAL_FOV_DEG = 61.0
+
+        val HORIZONTAL_APP = HORIZONTAL_FOV_DEG / WIDTH // horizontal angle per pixel
+        val VERTICAL_APP = VERTICAL_FOV_DEG / HEIGHT // horizontal angle per pixel
+
     }
 }
