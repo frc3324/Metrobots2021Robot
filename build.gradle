@@ -55,6 +55,11 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
+    // Enable simulation gui support. Must check the box in vscode to enable support
+    // upon debugging
+    simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
+    simulation wpi.deps.sim.driverstation(wpi.platforms.desktop, false)
+
 //    compile group: 'org.openpnp', name: 'opencv', version: '3.4.2-0'
 
     // We need to add the Kotlin stdlib in order to use most Kotlin language features.
